@@ -1,12 +1,15 @@
+import { listAllObjects } from "@/cloudflare";
+import {
+  site_title as app_title,
+  public_prefix as public_relative_url_prefix,
+} from "@/constants";
+import { getRemoteImageDimensions } from "@/local_utilities";
+import { batches, do_, zodParsePrettyErrors } from "@/utility";
 import { DynamicCommandLineParser } from "@rushstack/ts-command-line";
 import fs from "fs";
 import path from "path";
 import { renderToStaticMarkup } from "react-dom/server";
 import z from "zod";
-import { listAllObjects } from "@/cloudflare";
-import { site_title as app_title } from "@/constants";
-import { batches, do_, zodParsePrettyErrors } from "@/utility";
-import { getRemoteImageDimensions } from "@/local_utilities";
 
 // -----------------------------------------------------------------------------
 
@@ -183,7 +186,9 @@ await Bun.file(path.join(output_dirpath, "index.html")).write(
             <ul className="menu">
               {pages.map((page, i) => (
                 <li key={i}>
-                  <a href={`/${page.name}.html`}>{page.title}</a>
+                  <a href={`/${public_relative_url_prefix}/${page.name}.html`}>
+                    {page.title}
+                  </a>
                 </li>
               ))}
             </ul>
