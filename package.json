@@ -5,7 +5,8 @@
     "@rushstack/ts-command-line": "^5.2.0",
     "@types/bun": "latest",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "image-size": "^2.0.2"
   },
   "peerDependencies": {
     "typescript": "^5"

@@ -3,7 +3,7 @@ import {
   S3Client,
   type ListObjectsV2CommandInput,
 } from "@aws-sdk/client-s3";
-import env from "./env";
+import env from "@/env";
 
 const client = new S3Client({
   region: "auto",

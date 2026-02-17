@@ -3,9 +3,10 @@ import fs from "fs";
 import path from "path";
 import { renderToStaticMarkup } from "react-dom/server";
 import z from "zod";
-import { listAllObjects } from "../src/cloudflare";
-import { site_title as app_title } from "../src/constants";
-import { do_, zodParsePrettyErrors } from "../src/utility";
+import { listAllObjects } from "@/cloudflare";
+import { site_title as app_title } from "@/constants";
+import { batches, do_, zodParsePrettyErrors } from "@/utility";
+import { getRemoteImageDimensions } from "@/local_utilities";
 
 // -----------------------------------------------------------------------------
 
@@ -88,6 +89,39 @@ const pages: Page[] = [
         },
       );
 
+      const objectsWithMetadata = await useCache(
+        `${page.name} objectsWithMetadata`,
+        z.array(
+          z.object({
+            name: z.string(),
+            url: z.string(),
+            dimensions: z.optional(
+              z.object({ height: z.number(), width: z.number() }),
+            ),
+          }),
+        ),
+        async () =>
+          await batches(
+            objects.map((name) => async () => {
+              const url = `${public_development_url}/${name}`;
+              const dimensions = await do_(async () => {
+                try {
+                  return await getRemoteImageDimensions(url);
+                } catch (error: unknown) {
+                  if (error instanceof Error) {
+                    console.error(error.message);
+                  } else {
+                    console.error(error);
+                  }
+                  return undefined;
+                }
+              });
+              return { name, url, dimensions };
+            }),
+            100,
+          ),
+      );
+
       const lazy_threashold_index = 4;
 
       function GalleryPage(props: {}) {
@@ -101,14 +135,15 @@ const pages: Page[] = [
             <body>
               <div className="title">{`${app_title} | ${page.title}`}</div>
               <div className="gallery">
-                {objects.map((name, i) => (
-                  <div className="gallery-item" key={i}>
-                    <img
-                      className="gallery-item-img"
-                      loading={lazy_threashold_index <= i ? "eager" : "lazy"}
-                      src={`${public_development_url}/${name}`}
-                    ></img>
-                  </div>
+                {objectsWithMetadata.map((object, i) => (
+                  <img
+                    className="gallery-item-img"
+                    key={i}
+                    loading={lazy_threashold_index <= i ? "lazy" : "eager"}
+                    height={object.dimensions?.height}
+                    width={object.dimensions?.width}
+                    src={`${public_development_url}/${object.name}`}
+                  />
                 ))}
               </div>
             </body>
@@ -141,18 +176,17 @@ await Bun.file(path.join(output_dirpath, "index.html")).write(
           <head>
             <meta charSet="utf-8" />
             <title>{app_title}</title>
+            <link rel="stylesheet" href="/index.css"></link>
           </head>
           <body>
             <div className="title">{app_title}</div>
-            <div className="menu">
-              <div className="menu-item">
-                {pages.map((page, i) => (
-                  <a href={`/${page.name}.html`} key={i}>
-                    {page.title}
-                  </a>
-                ))}
-              </div>
-            </div>
+            <ul className="menu">
+              {pages.map((page, i) => (
+                <li key={i}>
+                  <a href={`/${page.name}.html`}>{page.title}</a>
+                </li>
+              ))}
+            </ul>
           </body>
         </html>
       );
