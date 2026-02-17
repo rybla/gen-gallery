@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  padding: 1em;
+  font-size: 2em;
+}
+
+.gallery {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.gallery-item-img {
+  /* Constrain the image to the viewport width and height */
+  max-width: 100vw;
+  max-height: 100vh;
+
+  /* Override the HTML attributes to maintain aspect ratio */
+  width: auto;
+  height: auto;
+
+  /* Optional: specific display settings to remove inline spacing */
+  display: block;
+}
