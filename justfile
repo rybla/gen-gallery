@@ -1,8 +1,8 @@
 build:
-  bun run script/build.ts --cache
+  bun run scripts/build.tsx --cache
 
 build_fetch:
-  bun run script/build.ts
+  bun run scripts/build.tsx
 
 deploy: build
   bun gh-pages -d dist --nojekyll
