@@ -92,6 +92,7 @@ const pages: Page[] = [
         },
       );
 
+      // cache this on a per-object basis so can be updated incrementally as I add more objects to the bucket
       const objectsWithMetadata = await useCache(
         `${page.name} objectsWithMetadata`,
         z.array(
