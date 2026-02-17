@@ -1,10 +1,8 @@
 import {
-  S3Client,
   ListObjectsV2Command,
+  S3Client,
   type ListObjectsV2CommandInput,
 } from "@aws-sdk/client-s3";
-import z from "zod";
-import { zodParsePrettyErrors } from "./utility";
 import env from "./env";
 
 const client = new S3Client({
@@ -46,5 +44,3 @@ export async function listAllObjects(bucketName: string): Promise<string[]> {
 
   return allKeys;
 }
-
-// https://pub-232f9aa938d64458b3360607cda3228f.r2.dev/6bdb4045-c64d-4b1b-8e6d-137ec622fbac.jpg

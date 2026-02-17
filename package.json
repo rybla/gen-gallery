@@ -2,6 +2,7 @@
   "name": "gen-gallery",
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.991.0",
+    "@rushstack/ts-command-line": "^5.2.0",
     "@types/bun": "latest",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3"

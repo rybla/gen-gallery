@@ -1,5 +1,5 @@
-import { listAllObjects } from "./cloudflare";
-import env from "./env";
+import { listAllObjects } from "../src/cloudflare";
+import env from "../src/env";
 
 listAllObjects(env.R2_BUCKET_NAME)
   .then((keys) => console.log(JSON.stringify(keys, null, 2)))
