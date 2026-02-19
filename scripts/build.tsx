@@ -107,6 +107,7 @@ const pages: Page[] = [
         async () =>
           await batches(
             objects.map((name) => async () => {
+              console.log(`getting metadata for object ${name}`);
               const url = `${public_development_url}/${name}`;
               const dimensions = await do_(async () => {
                 try {
